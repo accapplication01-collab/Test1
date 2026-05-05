@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Саясаттану — Тест</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #000;
+  --surface: #080810;
+  --card: #0f0f18;
+  --card2: #141420;
+  --border: rgba(255,255,255,0.07);
+  --border-glow: rgba(0,210,255,0.35);
+  --text: #eeeef5;
+  --muted: rgba(238,238,245,0.4);
+  --accent: #00d2ff;
+  --accent2: #7b5ea7;
+  --green: #00e676;
+  --red: #ff4d6d;
+  --nano: #00ffe7;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',-apple-system,sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── BG ── */
+.nb{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 90% 55% at 50% -10%,rgba(0,210,255,.07) 0%,transparent 60%),
+             radial-gradient(ellipse 60% 40% at 85% 85%,rgba(123,94,167,.06) 0%,transparent 60%),#000}
+.ng{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,210,255,.03) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(0,210,255,.03) 1px,transparent 1px);
+  background-size:56px 56px}
+.nd{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(0,210,255,.13) 1px,transparent 1px);
+  background-size:56px 56px;background-position:28px 28px}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.nl{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.14em;
+  color:var(--accent);text-transform:uppercase}
+.nl span{color:var(--muted)}
+.np{background:rgba(0,210,255,.08);border:1px solid rgba(0,210,255,.22);
+  border-radius:20px;padding:4px 14px;font-size:11px;letter-spacing:.1em;
+  color:var(--accent);font-family:'Space Mono',monospace;text-transform:uppercase;
+  transition:all .2s}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;padding:52px 0 0;
+  justify-content:center;align-items:flex-start}
+.screen.active{display:flex}
+
+/* ══════════════ HOME ══════════════ */
+#home{flex-direction:column;align-items:center;padding-top:0}
+.hero{width:100%;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:80px 24px 60px;gap:0;position:relative;z-index:1}
+
+.htag{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.25em;
+  color:var(--accent);text-transform:uppercase;padding:6px 16px;
+  border:1px solid rgba(0,210,255,.28);border-radius:20px;margin-bottom:32px;
+  background:rgba(0,210,255,.05);animation:fu .7s ease both}
+.htitle{font-size:clamp(44px,8.5vw,92px);font-weight:600;line-height:1.04;
+  letter-spacing:-.03em;margin-bottom:18px;animation:fu .7s .1s ease both}
+.htitle em{font-style:normal;
+  background:linear-gradient(135deg,var(--accent),var(--accent2) 55%,#ff6ef7);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hsub{font-size:clamp(15px,2.4vw,19px);color:var(--muted);max-width:500px;
+  line-height:1.65;margin-bottom:48px;animation:fu .7s .18s ease both}
+
+.srow{display:flex;gap:36px;margin-bottom:48px;animation:fu .7s .26s ease both;flex-wrap:wrap;justify-content:center}
+.stat{text-align:center}
+.sn{font-size:30px;font-weight:600;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sl{font-size:11px;color:var(--muted);letter-spacing:.05em;margin-top:2px}
+
+/* Tour indicator */
+.tour-indicator{
+  display:flex;gap:8px;margin-bottom:40px;animation:fu .7s .3s ease both;
+  justify-content:center;flex-wrap:wrap;
+}
+.tour-dot{
+  width:32px;height:32px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);
+  transition:all .3s;position:relative;
+}
+.tour-dot.done{
+  border-color:var(--green);background:rgba(0,230,118,.12);color:var(--green);
+}
+.tour-dot.active{
+  border-color:var(--accent);background:rgba(0,210,255,.12);color:var(--accent);
+  box-shadow:0 0 14px rgba(0,210,255,.3);
+}
+
+.btn-start{display:inline-flex;align-items:center;gap:10px;
+  background:var(--accent);color:#000;font-weight:600;font-size:16px;
+  padding:16px 40px;border-radius:60px;border:none;cursor:pointer;
+  transition:all .2s;animation:fu .7s .36s ease both;letter-spacing:-.01em;
+  position:relative;overflow:hidden}
+.btn-start::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.2) 0%,transparent 60%);
+  pointer-events:none}
+.btn-start:hover{transform:translateY(-2px);
+  box-shadow:0 0 40px rgba(0,210,255,.5),0 8px 28px rgba(0,210,255,.3)}
+.btn-start:active{transform:none}
+
+.molecule{margin:52px auto 0;width:200px;height:200px;
+  position:relative;animation:fu .7s .44s ease both}
+.molecule svg{width:100%;height:100%}
+
+/* ══════════════ QUIZ ══════════════ */
+#quiz{flex-direction:column;align-items:center;padding:52px 0 80px}
+.qwrap{width:100%;max-width:740px;padding:32px 24px;position:relative;z-index:1}
+
+.pbw{width:100%;height:3px;background:rgba(255,255,255,.06);
+  border-radius:2px;margin-bottom:28px;overflow:hidden}
+.pbf{height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .45s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 0 10px rgba(0,210,255,.55)}
+
+.pmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:12px;flex-wrap:wrap}
+.qctr{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:.1em}
+.qctr strong{color:var(--accent)}
+.sbadge{font-family:'Space Mono',monospace;font-size:11px;
+  background:rgba(0,210,255,.07);border:1px solid rgba(0,210,255,.18);
+  border-radius:20px;padding:4px 12px;color:var(--accent);white-space:nowrap}
+.tour-badge{font-family:'Space Mono',monospace;font-size:10px;
+  background:rgba(123,94,167,.1);border:1px solid rgba(123,94,167,.25);
+  border-radius:20px;padding:4px 10px;color:var(--accent2)}
+
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:32px;margin-bottom:18px;position:relative;overflow:hidden;
+  animation:ci .38s cubic-bezier(.22,1,.36,1) both}
+.qcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,210,255,.35),transparent)}
+@keyframes ci{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.qnum{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+.qtext{font-size:clamp(15px,2.2vw,17px);line-height:1.58;font-weight:400}
+
+.ogrid{display:flex;flex-direction:column;gap:9px;
+  animation:ci .38s .05s cubic-bezier(.22,1,.36,1) both}
+.obtn{display:flex;align-items:center;gap:14px;
+  background:var(--card);border:1px solid var(--border);border-radius:13px;
+  padding:15px 18px;cursor:pointer;transition:all .14s;text-align:left;
+  color:var(--text);font-size:14px;line-height:1.5;
+  font-family:'DM Sans',sans-serif;position:relative;overflow:hidden}
+.obtn:hover:not(:disabled){border-color:rgba(0,210,255,.38);
+  background:var(--card2);transform:translateX(4px)}
+.obtn:disabled{cursor:default}
+.oltr{min-width:28px;height:28px;border-radius:7px;
+  border:1px solid rgba(255,255,255,.13);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  color:var(--muted);transition:all .14s;flex-shrink:0}
+.obtn:hover:not(:disabled) .oltr{border-color:var(--accent);color:var(--accent);
+  background:rgba(0,210,255,.09)}
+.obtn.correct{border-color:var(--green)!important;background:rgba(0,230,118,.08)!important;transform:none!important}
+.obtn.correct .oltr{background:var(--green);border-color:var(--green);color:#000;font-weight:700}
+.obtn.wrong{border-color:var(--red)!important;background:rgba(255,77,109,.08)!important;transform:none!important}
+.obtn.wrong .oltr{background:var(--red);border-color:var(--red);color:#fff}
+.obtn.dim{opacity:.3}
+
+.fb{display:none;align-items:center;gap:12px;padding:14px 18px;
+  border-radius:13px;margin-top:4px;font-size:13px;line-height:1.5;
+  animation:fbi .28s ease both}
+.fb.show{display:flex}
+.fb.ok{background:rgba(0,230,118,.09);border:1px solid rgba(0,230,118,.2);color:var(--green)}
+.fb.err{background:rgba(255,77,109,.09);border:1px solid rgba(255,77,109,.2);color:var(--red)}
+.fbico{font-size:18px;flex-shrink:0}
+@keyframes fbi{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+
+.bnext{display:none;width:100%;margin-top:18px;
+  background:transparent;border:1px solid rgba(0,210,255,.35);color:var(--accent);
+  font-size:15px;font-weight:500;padding:14px;border-radius:13px;
+  cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;letter-spacing:.02em}
+.bnext:hover{background:rgba(0,210,255,.09);border-color:var(--accent);
+  box-shadow:0 0 18px rgba(0,210,255,.2)}
+.bnext.show{display:block;animation:fbi .28s ease both}
+
+/* ══════════════ RESULT ══════════════ */
+#result{flex-direction:column;align-items:center;justify-content:center}
+.rbox{width:100%;max-width:540px;padding:32px 24px;text-align:center;position:relative;z-index:1}
+
+.rring{width:164px;height:164px;margin:0 auto 32px;position:relative}
+.rring svg{transform:rotate(-90deg)}
+.rt{fill:none;stroke:rgba(255,255,255,.07);stroke-width:9}
+.rf{fill:none;stroke-width:9;stroke-linecap:round;stroke:url(#rg);
+  transition:stroke-dashoffset 1.3s cubic-bezier(.22,1,.36,1)}
+.rtxt{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px}
+.rpct{font-size:34px;font-weight:600;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.rlbl{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.1em}
+
+.rgrade{font-size:12px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--accent);font-family:'Space Mono',monospace;margin-bottom:10px}
+.rtitle{font-size:clamp(26px,5vw,40px);font-weight:600;
+  letter-spacing:-.02em;margin-bottom:8px}
+.rsub{color:var(--muted);font-size:14px;margin-bottom:32px;line-height:1.6}
+
+.rstats{display:flex;gap:10px;justify-content:center;margin-bottom:32px;flex-wrap:wrap}
+.rs{flex:1;min-width:90px;background:var(--card);border:1px solid var(--border);
+  border-radius:13px;padding:14px 10px;text-align:center}
+.rsn{font-size:24px;font-weight:600}
+.rsn.g{color:var(--green)}.rsn.r{color:var(--red)}.rsn.b{color:var(--accent)}
+.rsl{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:.05em}
+
+/* tour progress in result */
+.tour-progress{display:flex;gap:8px;justify-content:center;margin-bottom:28px;flex-wrap:wrap}
+.tp-dot{width:36px;height:36px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.12);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:9px;gap:1px;transition:all .3s}
+.tp-dot.done{border-color:var(--green);background:rgba(0,230,118,.1)}
+.tp-dot .tpn{font-family:'Space Mono',monospace;font-size:9px;color:var(--green)}
+.tp-dot .tps{font-size:8px;color:var(--muted)}
+.tp-dot.pending{border-color:rgba(255,255,255,.1)}
+.tp-dot.pending .tpn{color:var(--muted)}
+
+.brow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.brestart{display:inline-flex;align-items:center;gap:8px;
+  background:var(--accent);color:#000;font-weight:600;font-size:15px;
+  padding:14px 32px;border-radius:60px;border:none;cursor:pointer;
+  transition:all .2s}
+.brestart:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(0,210,255,.4)}
+.bfull{display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--accent);font-weight:500;font-size:14px;
+  padding:13px 24px;border-radius:60px;
+  border:1px solid rgba(0,210,255,.3);cursor:pointer;transition:all .2s;
+  font-family:'DM Sans',sans-serif}
+.bfull:hover{background:rgba(0,210,255,.08);border-color:var(--accent)}
+
+/* ── UTILS ── */
+@keyframes fu{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+.confetti-p{position:fixed;width:7px;height:7px;z-index:200;
+  border-radius:2px;pointer-events:none;
+  animation:cf 2.2s ease-in both}
+@keyframes cf{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(110vh) rotate(800deg);opacity:0}}
+
+.particle{position:fixed;pointer-events:none;z-index:0;
+  width:2px;height:2px;border-radius:50%;background:var(--accent);
+  animation:fp linear infinite;opacity:0}
+@keyframes fp{
+  0%{transform:translateY(100vh) translateX(0);opacity:0}
+  10%{opacity:.55}90%{opacity:.25}
+  100%{transform:translateY(-80px) translateX(0);opacity:0}}
+
+@media(max-width:600px){
+  .qcard{padding:22px}.srow{gap:20px}.htitle{font-size:36px}
+  .pmeta{gap:6px}.sbadge,.tour-badge{font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="nb"></div>
+<div class="ng"></div>
+<div class="nd"></div>
+<div id="particles"></div>
+
+<nav>
+  <div class="nl">Nano<span>Learn</span> · KZ</div>
+  <div class="np" id="navPill">Саясаттану</div>
+</nav>
+
+<div style="position:relative;z-index:1">
+
+<!-- ══ HOME ══ -->
+<div class="screen active" id="home">
+<div class="hero">
+  <div class="htag">⬡ Саяси Ғылым · 250 Сұрақ</div>
+  <h1 class="htitle">Өзіңді<br><em>Прокачай</em></h1>
+  <p class="hsub">Әрбір тур — 40 рандом сұрақ. 7 тур = 280 сұраққа жауап. Барлық тур бойынша нәтиженді тексер!</p>
+
+  <div class="srow">
+    <div class="stat"><div class="sn">250</div><div class="sl">Жалпы сұрақ</div></div>
+    <div class="stat"><div class="sn">40</div><div class="sl">Турдегі сұрақ</div></div>
+    <div class="stat"><div class="sn">7</div><div class="sl">Тур</div></div>
+    <div class="stat"><div class="sn">100</div><div class="sl">Макс балл</div></div>
+  </div>
+
+  <div class="tour-indicator" id="homeTourdots"></div>
+
+  <button class="btn-start" id="btnStart" onclick="startQuiz()">
+    <span>⬡</span> <span id="startLabel">1-тур бастау</span>
+  </button>
+
+  <div class="molecule">
+    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="mg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#00d2ff" stop-opacity=".7"/>
+          <stop offset="100%" stop-color="#00d2ff" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <line x1="100" y1="100" x2="35" y2="52"  stroke="rgba(0,210,255,.22)" stroke-width="1.4"/>
+      <line x1="100" y1="100" x2="165" y2="52" stroke="rgba(0,210,255,.22)" stroke-width="1.4"/>
+      <line x1="100" y1="100" x2="35" y2="155" stroke="rgba(0,210,255,.22)" stroke-width="1.4"/>
+      <line x1="100" y1="100" x2="165" y2="155"stroke="rgba(0,210,255,.22)" stroke-width="1.4"/>
+      <line x1="100" y1="100" x2="100" y2="18"  stroke="rgba(0,210,255,.13)" stroke-width="1"/>
+      <line x1="100" y1="100" x2="100" y2="182" stroke="rgba(0,210,255,.13)" stroke-width="1"/>
+      <line x1="35"  y1="52"  x2="165" y2="52"  stroke="rgba(0,210,255,.09)" stroke-width="1"/>
+      <line x1="35"  y1="155" x2="165" y2="155" stroke="rgba(0,210,255,.09)" stroke-width="1"/>
+      <circle cx="35"  cy="52"  r="6.5" fill="rgba(0,210,255,.18)" stroke="rgba(0,210,255,.55)" stroke-width="1.4"/>
+      <circle cx="165" cy="52"  r="6.5" fill="rgba(123,94,167,.18)" stroke="rgba(123,94,167,.55)" stroke-width="1.4"/>
+      <circle cx="35"  cy="155" r="6.5" fill="rgba(123,94,167,.18)" stroke="rgba(123,94,167,.55)" stroke-width="1.4"/>
+      <circle cx="165" cy="155" r="6.5" fill="rgba(0,210,255,.18)" stroke="rgba(0,210,255,.55)" stroke-width="1.4"/>
+      <circle cx="100" cy="18"  r="4.5" fill="rgba(0,255,231,.18)" stroke="rgba(0,255,231,.5)"   stroke-width="1.4"/>
+      <circle cx="100" cy="182" r="4.5" fill="rgba(0,255,231,.18)" stroke="rgba(0,255,231,.5)"   stroke-width="1.4"/>
+      <circle cx="100" cy="100" r="26" fill="url(#mg)"/>
+      <circle cx="100" cy="100" r="17" fill="rgba(0,0,0,.8)" stroke="rgba(0,210,255,.55)" stroke-width="1.4"/>
+      <circle cx="100" cy="100" r="7"  fill="rgba(0,210,255,.9)">
+        <animate attributeName="r" values="7;10;7" dur="2.2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values=".9;.45;.9" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="100" cy="100" r="40" fill="none" stroke="rgba(0,210,255,.1)" stroke-width="1" stroke-dasharray="5 4"/>
+      <circle cx="140" cy="100" r="3.5" fill="rgba(0,255,231,.7)">
+        <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="6s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+</div>
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="screen" id="quiz">
+<div class="qwrap">
+  <div class="pbw"><div class="pbf" id="pbf" style="width:0%"></div></div>
+  <div class="pmeta">
+    <div class="qctr">Сұрақ <strong id="qNum">1</strong> / 40</div>
+    <div class="tour-badge" id="tourBadge">ТУР 1 / 7</div>
+    <div class="sbadge">⬡ <span id="liveScore">0</span> дұрыс</div>
+  </div>
+  <div class="qcard" id="qcard">
+    <div class="qnum" id="qnumlbl">СҰРАҚ 001</div>
+    <div class="qtext" id="qtext">…</div>
+  </div>
+  <div class="ogrid" id="ogrid"></div>
+  <div class="fb" id="fb"><span class="fbico"></span><span id="fbtext"></span></div>
+  <button class="bnext" id="bnext" onclick="nextQ()">Келесі →</button>
+</div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div class="screen" id="result">
+<div class="rbox">
+  <div class="rring">
+    <svg viewBox="0 0 164 164" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#00d2ff"/>
+          <stop offset="100%" stop-color="#7b5ea7"/>
+        </linearGradient>
+      </defs>
+      <circle class="rt" cx="82" cy="82" r="70"/>
+      <circle class="rf" id="rfill" cx="82" cy="82" r="70"
+        stroke-dasharray="440" stroke-dashoffset="440"/>
+    </svg>
+    <div class="rtxt">
+      <div class="rpct" id="rpct">0%</div>
+      <div class="rlbl">НӘТИЖЕ</div>
+    </div>
+  </div>
+
+  <div class="rgrade" id="rgrade">—</div>
+  <h2 class="rtitle" id="rtitle">—</h2>
+  <p class="rsub" id="rsub">—</p>
+
+  <div class="rstats">
+    <div class="rs"><div class="rsn g" id="rscr">0</div><div class="rsl">Дұрыс</div></div>
+    <div class="rs"><div class="rsn r" id="rwrong">0</div><div class="rsl">Қате</div></div>
+    <div class="rs"><div class="rsn b" id="rbal">0/100</div><div class="rsl">Балл</div></div>
+  </div>
+
+  <div class="tour-progress" id="tourProgress"></div>
+
+  <div class="brow">
+    <button class="bfull" id="btnAllTours" onclick="goHome()" style="display:none">← Басты бет</button>
+    <button class="brestart" id="btnNextTour" onclick="nextTour()">Келесі тур →</button>
+  </div>
+</div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════════
+//  DATA — parse raw questions
+// ══════════════════════════════════════════
+const RAW_QUESTIONS = `< question> саясаттануды ғылыми пән ретінде зерттеудің объектісі қандай?
+<variant > билік, саясат, мемлекет және саяси қатынастар
+<variant > Табиғи ресурстар және экономикалық процестер
+<variant> моральдық нормалар мен эстетикалық құндылықтар
+<variant > эксперименттің ғылыми әдістері мен логикасы
+< question> саясаттану функцияларының қайсысы теория мен практика арасындағы байланысты қамтамасыз етеді?
+<variant> қолданбалы
+< Variant> дүниетанымдық
+< variant> теориялық-танымдық
+< Variant > сыни
+<question > ежелгі ойшылдардың қайсысы әділ мемлекет идеясын ақылға қонымды және ізгі азаматтардың иерархиясы ретінде енгізді?
+< Variant > Платон
+<variant> Цицерон
+< variant> Сократ
+< Variant > Демокрит
+<question> Аристотель саяси ғылымның дамуына қандай үлес қосты?
+<variant > басқару формаларын жіктеп, олардың артықшылықтары мен кемшіліктерін атап өтті
+<variant> диктатура теориясын жасады
+<variant > көрінбейтін қол тұжырымдамасын жасады
+< variant> теократияны негіздеді
+< question> саяси биліктің қай анықтамасы ең дәл?
+< variant> билік, заң және мәжбүрлеу арқылы адамдардың мінез-құлқына әсер ету мүмкіндігі
+<variant > экономиканы бақылау мүмкіндігі
+< variant> діни нормаларға бағыну механизмі
+<variant > моральдық әсер ету құралы
+<question> билікті бөлу принципі нені білдіреді?
+<variant> заң шығарушы, атқарушы және сот билігін теріс пайдаланудың алдын алу үшін бөлу
+< variant> соттың Парламентке есеп беру құқығы
+< variant> барлық функцияларды бір органда орталықтандыру
+< variant> атқарушы биліктің Үстемдігі
+<question > тоталитарлық саяси режимді не ажыратады?
+< variant> қоғамның барлық салаларын бақылау және жеке тұлғаға табыну
+< variant> билікті Конституциямен шектеу
+<variant > саяси партиялардың әртүрлілігі
+<variant> тұрақты әділ сайлау өткізу
+< question> демократияның негізгі белгісі қандай?
+< variant> саяси плюрализм және азшылықтардың құқықтарын қорғау
+< variant> билікті бір қолмен шоғырландыру
+<variant > сайлаудың болмауы
+<variant> бұқаралық ақпарат құралдарын қатаң бақылау
+<question > қоғамның саяси жүйесінің құрылымына не кіреді?
+<variant > билікке қатысты институттар, нормалар, қатынастар және құндылықтар
+< variant> тек Үкімет пен парламент
+< Variant > Экономика және мәдениет
+< variant> Діни ұйымдар
+<question > Саяси жүйелер теориясында қара жәшік нені білдіреді?
+< variant> жүйенің ішкі құрылымы мен жұмыс істеу механизмдерінің белгісіздігі
+<variant > сайлауда жасырын дауыс беру
+< variant > бюрократиялық құрылымдардың ашықтығы
+<variant > саясаттағы сыбайлас жемқорлық схемалары
+<question > құқықтық мемлекетті не ажыратады?
+< variant > заңның үстемдігі, биліктің бөлінуі және адам құқықтарын қорғау
+< variant> атқарушы билікке толық бағыну
+<variant> партиялық идеологияның Үстемдігі
+<variant> барлық басқару функцияларын орталықтандыру
+< question> мемлекеттің ішкі функциясы қандай?
+< variant> құқық тәртібін сақтау және меншік құқығын қорғау
+< variant > Халықаралық ұйымдарға қатысу
+< variant > ұлттық қауіпсіздікті қамтамасыз ету
+<variant> сыртқы саясатты жүргізу
+<question > саяси партияның басты мақсаты неде?
+< variant> әлеуметтік топтың мүдделерін білдіру және билік үшін күрес
+< variant> діни көзқарастарды қалыптастыру
+< variant> әлеуметтанулық зерттеулер жүргізу
+< variant> мәдени қызметке қатысу
+< question> бұқаралық саяси партияны не ажыратады?
+<variant > кең әлеуметтік база, белсенді үгіт және сайлаушылармен тұрақты байланыс
+< variant> қатысушылардың аз саны және сайлауға бағдарлану
+< variant> халықаралық конференцияларға қатысу
+<variant> бағдарламалық қызметтен бас тарту
+<question > саяси қақтығыстың себебі неде?
+< variant> әлеуметтік топтардың мүдделерінің сәйкес келмеуі, билік пен ресурстар үшін күрес
+< variant> шаруашылық жүргізуші субъектілер арасындағы келіспеушіліктер
+<variant > табиғи ресурстардың жетіспеушілігі
+< variant> білім деңгейіндегі айырмашылықтар
+<question > саяси қақтығыстарды шешудің қай әдісі Бейбіт деп саналады?
+<variant> Төрелік және келіссөздер
+<variant > әскери төңкеріс
+< variant > күш қолдану
+<variant > ақпараттық өріс блокадасы
+< question> Парето элитасы тұжырымдамасының негізі неде?
+<variant > қоғамда әрқашан билік пен ықпалға ие азшылық бар
+<variant> барлық адамдар тең және ұжымдық түрде басқарады
+<variant > элиталар тікелей дауыс беру арқылы сайлануы керек
+< variant> Элита-бұл уақытша құбылыс
+<question > М. Вебердің харизматикалық көшбасшылығын не ажыратады?
+<variant> көшбасшы тұлғасының айрықша қасиеттеріне сенуге негізделген
+< variant> құқық пен заңға негізделген
+<variant > дәстүрге негізделген
+< variant> отбасылық байланыстарға негізделген
+< question> саяси әлеуметтену нені қамтиды?
+< variant> саяси білімді, құндылықтарды және мінез-құлық үлгілерін беру
+<variant> шет тілдерін оқыту
+<variant > дене шынықтыруды арттыру
+< variant> заң бойынша емтихандарға дайындық
+< question> саяси идеологияның белгісі неде?
+< variant> белгілі бір әлеуметтік топтардың мүдделерін білдіретін көзқарастар жүйесі
+< variant> кездейсоқ саяси пікірлер жиынтығы
+< variant > елдің экономикалық даму бағдарламасы
+<variant> Қылмыстық кодекстің құқықтық нормалары
+<question> азаматтық қоғам термині нені білдіреді?
+< variant> азаматтардың мүдделерін білдіретін мемлекеттік емес ұйымдар мен қатынастардың жиынтығы
+< variant > монархтың билігіне бағынатын қоғам
+< variant> діни догмаларға негізделген қоғам
+< variant > мемлекетке құқықсыз бағынатын халық
+< question> демократиялық қоғамның саяси мәдениетін қандай белгі ажыратады?
+< variant> азаматтардың саяси өмірге белсенді қатысуы және заңдарды құрметтеу
+<variant> сайлауға немқұрайлы қарау
+< variant> саяси радикализм және зорлық-зомбылық
+< variant> көшбасшыға толық бағыну
+<question > биліктің заңдылығы ұғымы нені білдіреді?
+<variant > халықтың билікті заңды және әділ деп тануы
+< variant> күш қолдану мүмкіндігі
+<variant > тек армияны қолдау
+< variant > үкіметтің қаржылық тұрақтылығы
+<question > саяси жұмылдыруға қандай сипаттама жатады?
+< variant> саяси әрекеттерге қатысу үшін азаматтарды жандандыру
+< variant> саяси аренадан оппозицияны жою
+< variant > халықтың саяси белсенділігінің төмендеуі
+<variant > БАҚ ақпаратын бұғаттау
+<question > қандай саяси режим биліктің бөлінуімен және құқықтық бақылаумен сипатталады?
+< Variant > Демократиялық
+< Variant > тоталитарлық
+< Variant > авторитарлық
+<variant > әскери
+<question > саяси мінез-құлықтың қай түрі сайлауға митингілерге петицияларға қатысуды көздейді?
+< variant> Белсенді
+< variant> немқұрайлы
+<variant> деструктивті
+<variant> пассивті-бақылау
+<question> либерализмнің саяси идеологиясы қандай?
+< variant> жеке бас бостандығы, адам құқықтары, мемлекеттің шектеулі рөлі
+< variant> жеке тұлғаның мемлекетке толық бағынуы
+<variant > саясаттағы діни нормалардың басымдығы
+< Variant > ұжымдастыру және жоспарлы экономика
+<question > саяси элитаның құрылымына не кіреді?
+< variant> негізгі саяси шешімдер қабылдайтын адамдар
+< variant > елдің барлық азаматтары
+<variant > тек шағын бизнес өкілдері
+< variant> ғалымдар мен мәдениет қайраткерлері
+<question > саясаттағы оппозиция термині нені білдіреді?
+< variant> билікке балама көзқарас пен сынды білдіретін саяси күш
+< variant > президентті қолдайтын мемлекеттік орган
+<variant > Үкімет жанындағы қарулы құрылым
+< variant > Парламент жанындағы Сот институты
+<question > Саяси модернизация ұғымы нені білдіреді?
+< variant> Саяси институттар мен тәжірибелерді заманауи жаңарту
+< variant> монархиялық билікті күшейту
+< variant> теократияға көшу
+< variant> азаматтарды басқаруға қатысудан бас тарту
+< question> саясаттану қазіргі қоғамда қандай рөл атқарады?
+<variant > саяси процестерді талдайды және саяси мәдениеттің артуына ықпал етеді
+< variant> экономикалық тұрақтандыруға ықпал етеді
+< variant> діни дауларды шешуге көмектеседі
+< variant> көркемдік құндылықтарды бағалайды
+< question> саясаттанушылар саяси жүйелерді салыстыру үшін қандай әдісті қолданады?
+<variant> салыстырмалы
+< variant> Тарихи
+< Variant > мазмұнды талдау
+< variant> өмірбаяндық
+< question> Джон Локк басқарудың қандай түрін таңдады?
+<variant > биліктің бөлінуімен шектелген монархия
+< variant> абсолютті монархия
+< Variant > демократиялық республика
+< variant> Теократия
+<question > Руссо идеяларының демократия үшін маңызы неде?
+<variant > ол халықтық егемендік пен әлеуметтік келісім идеясын негіздеді
+<variant> ол халықтың егемендігін жоққа шығарды
+<variant> ол заңның үстемдігін талап етті
+<variant> ол монархтың абсолютті билігін жақтады
+<question > саяси биліктің болуының міндетті шарты қандай?
+< variant> қоғам тарапынан тану және бағыну
+<variant > әскери күш
+< Variant > қаржылық қолдау
+<variant> халықаралық тану
+< question> биліктің ұтымды-заңды түрі дегеніміз не?
+<variant > құқық пен заңдылыққа негізделген билік
+<variant > көшбасшының харизмасына негізделген билік
+< variant> әдет-ғұрыпқа негізделген билік
+<variant > мұрагерлік билік
+< question> демократиялық режимге тән белгілердің қайсысы?
+< variant> сөз бостандығы және саяси таңдау
+<variant > тәуелсіз соттың болмауы
+<variant> өмір бойы көшбасшының күші
+< variant > идеологияға Монополия
+< question> авторитарлық режимді демократиядан не ажыратады?
+<variant > БАҚ-ты қатаң бақылау және оппозицияны шектеу
+< variant> аумақтық бөлінудің болмауы
+< Variant > парламенттік жүйе
+< variant > биліктің ауысуы
+<question > қоғамның саяси жүйесі нені қамтиды?
+<variant > мемлекеттік институттар, партиялар, саяси мәдениет және нормалар
+< variant> тек парламент пен Үкімет
+<variant> білім беру мекемелері
+< variant> тек атқарушы органдар
+<question > саяси жүйенің коммуникативті функциясы қандай рөл атқарады?
+< variant> билік пен қоғам арасындағы байланысты ұйымдастырады
+<variant > әскери қауіпсіздікті қамтамасыз етеді
+< variant> мемлекеттік бюджетті қалыптастырады
+< variant> діни институттарды бақылайды
+<question> құқықтық мемлекеттің белгілеріне не кіреді?
+< variant > заңның үстемдігі, азаматтардың теңдігі және биліктің бөлінуі
+< variant> бір партияның үстемдігі
+< variant> соттың атқарушы билікке бағынуы
+<variant > әскери басқару
+< question> мемлекеттің қандай функциясы құқықтық тәртіпті сақтаумен байланысты?
+< variant> ішкі
+<variant> Сыртқы
+< variant> мәдени
+< Variant > дипломатиялық
+< question> бұқаралық партияға қандай белгі тән?
+< variant> кең әлеуметтік базаның және азаматтарды белсенді жұмылдырудың болуы
+< variant> тек элитаға бағдарлау
+<variant> сайлаудан бас тарту
+< variant> уақытша сипат және әлсіз ұйым
+<question > саяси партиялардың негізгі қызметі неде?
+< variant> қоғамдық пікір қалыптастыру және билік үшін күрес
+< variant > ғылыми зерттеулер жүргізу
+< variant> коммерциялық емес ұйымдарды тіркеу
+<variant > инфляция деңгейін бақылау
+<question > саяси қақтығыстың негізі неде?
+< variant > саясат субъектілерінің мүдделері мен құндылықтары арасындағы қайшылық
+<variant > табиғи апаттар
+< variant> әдеби қалаулар
+<variant > Климаттың өзгеруі
+< question> қақтығысты шешудің қай жолы институционалды болып саналады?
+< variant > референдум немесе сайлау өткізу
+<variant> бүлік және бүлік
+<variant> жол блокадасы
+< variant> Эмиграция
+<question > саяси элита дегеніміз не?
+< variant> негізгі саяси шешімдер қабылдаушылар тобы
+< variant > кездейсоқ билікте болған азаматтар
+< variant> әлеуметтік медиа мүшелері
+<variant > тек парламенттік депутаттар
+<question> көшбасшылықтың қай түрі жеке харизмаға негізделген?
+< variant> харизматикалық
+< variant> ұтымды-заңды
+< variant> дәстүрлі
+< Variant > бюрократиялық
+< question> саяси мәдениет нені қамтиды?
+< variant> азаматтардың саяси мінез-құлқының білімі, көзқарасы, бағдары және формалары
+< variant> тек діни дәстүрлер
+< variant > халықтың экономикалық әдеттері
+<variant> сайлау статистикасы
+<question > қандай мәдениет азаматтардың саясатқа жоғары қатысуымен сипатталады?
+< Variant> Партиципатор
+< variant> Subdannic
+< Variant > патриархалдық
+< variant> консервативті
+<question > кез-келген саяси идеологияның негізгі элементі қандай?
+<variant> белгілі бір әлеуметтік топтың мүдделерін білдіруге бағытталған саяси идеялар жүйесі
+< variant> көркемдік стиль
+<variant > партиялық символизм эстетикасы
+<variant> көшбасшының табыс деңгейі
+<question > дәстүрлі негіздер мен тұрақтылықты сақтауды қандай идеология қолдайды?
+< Variant > Консерватизм
+< variant> Анархизм
+<variant> Либерализм
+< variant> Социализм
+<question > аралас сайлау жүйесіне не тән?
+< variant> мажоритарлық және пропорционалды принциптердің тіркесімі
+<variant > тек бір мандатты округтерді пайдалану
+<variant > дауыс берусіз депутаттарды тағайындау
+< variant> бір турға тікелей дауыс беру
+<question> сайлаушылар ұғымы нені білдіреді?
+<variant > дауыс беруге құқығы бар барлық азаматтар
+< variant> Орталық сайлау органы
+< Variant > Парламенттік комиссиялар
+<variant > сайлауға үміткерлер
+< question> саяси модернизацияны ынталандыратын факторлардың қайсысы?
+<variant > әлеуметтік ұтқырлық және технологиялық даму
+< variant> дәстүршілдік
+< variant > білім берудің құлдырауы
+< variant > цензураны күшейту
+< question> транзитология ұғымы нені білдіреді?
+< variant > авторитарлық режимнен демократияға көшу теориясы
+<variant > көлік жүйесі туралы ілім
+< variant > халықаралық қақтығыстар туралы ғылым
+<variant > саяси ұрандар туралы ілім
+<question > мемлекеттің әлеуметтік саясатының мақсаты қандай?
+< variant > азаматтардың лайықты өмір сүру жағдайларын қамтамасыз ету
+< variant> экспорттың өсуі
+< variant > армияны нығайту
+<variant > салық базасын кеңейту
+< question> экономикалық саясат нені қамтиды?
+< variant> мемлекеттің нарыққа араласуы, салықтар, Инвестициялар және жұмыспен қамту
+< variant> тек дағдарысқа қарсы шаралар
+<variant > ХВҚ-мен келіссөздер жүргізу
+< variant > референдум өткізу
+< question> мемлекеттік басқару функцияларына не кіреді?
+< variant> билік органдарының қызметін ұйымдастыру, үйлестіру және реттеу
+< variant> тек БАҚ бақылау
+< variant> әлеуметтік сауалнамалар жүргізу
+< variant> діни ұйымдарды дамыту
+<question > Қазақстандағы цифрлық трансформацияның басымдықтарын қандай бағдарлама көрсетеді?
+< Variant> Цифрлық Қазақстан
+< Variant > Бір Еуропа Стратегиясы
+< Variant> жасыл белбеу
+<variant > НАТО Стратегиясы
+< question> осы белгілердің қайсысы саясаттануды тәуелсіз ғылым ретінде сипаттайды?
+< variant> объективтілік, жүйелілік және саяси құбылыстарды теориялық талдауға сүйену
+< variant> көркем мұраны зерттеу
+<variant> жеке тәжірибеге сүйену
+< variant> идеологиялық көзқарастарға тәуелділік
+< question> саясаттанудағы әдістер санатына не жатады?
+< variant> Тарихи-логикалық, салыстырмалы, жүйелік талдау
+<variant> мәтінді терең оқу
+<variant> мистикалық түсіндірулер
+<variant > моральдық сенім
+< question> Томас Гоббстың идеяларын қандай тұжырымдама көрсетеді?
+< variant> мемлекет хаостан қорғану үшін құрылған Левиафан
+<variant > халықтық егемендік теориясы
+< variant > биліктің теократиялық моделі
+< variant > мемлекеттің анархиялық теріске шығаруы
+<question > қазақ ойшылдарының қайсысының қосқан үлесі Қазақстанның саяси философиясының элементі ретінде қарастырылады?
+<Variant > Шоқан Уәлиханов
+< Variant > Абылай хан
+<variant > Махамбет Өтемісұлы
+<variant> Кенесары Қасымұлы
+< question> қандай элемент саяси биліктің негізгі құрамдас бөлігі болып табылады?
+< variant> заңдар мен институттар арқылы ерік-жігерді енгізу мүмкіндігі
+< variant> мәдени гегемония
+< variant> дәстүрлер мен мифология
+< Variant > символизм және рәсімдер
+< question> билік пен ықпалдың айырмашылығы неде?
+<variant> билік-формальды қатынас, әсер бейресми
+<variant > билік әрқашан мәжбүрлеу, ықпал әрқашан ерікті келісім
+<variant > билік-философиялық ұғым, ықпал-саяси
+< Variant > әсер әрқашан заңмен байланысты
+< question> демократиялық саяси режимді не ажыратады?
+< variant> шешім қабылдаудың ашықтығы және азаматтардың қатысуы
+< variant> біреудің күші принципі
+<variant > көшбасшылардың құпия тағайындаулары
+< variant> бір идеологияның Үстемдігі
+<question > қандай саяси режим жоғары орталықтандырумен және бостандықтарды шектеумен сипатталады?
+< Variant > авторитарлық
+< Variant > Федеративті
+< Variant > Демократиялық
+< Variant > конфедеративті
+<question > саяси жүйе қоғамда қандай рөл атқарады?
+<variant > әлеуметтік бақылауды жүзеге асырады және саяси тұрақтылықты қамтамасыз етеді
+< variant> тек мәдени нормаларды қалыптастырады
+<variant > тек әскери қауіпсіздікке жауап береді
+< variant> экономиканы тікелей басқарады
+< question> қандай элемент саяси жүйеге кірмейді?
+< variant> діни рәсімдер
+< variant> Саяси институттар
+< variant> Мемлекеттік рәміздер
+< variant> саяси мәдениет
+< question> мемлекеттік егемендік дегеніміз не?
+< variant> мемлекеттік биліктің сыртқы және ішкі қысымнан Тәуелсіздігі
+< variant> биліктің діни нормаларға бағынуы
+< variant> уақытша өкілеттіктерді беру
+< variant> ұлттық валютаның болуы
+<question > мемлекеттің қандай функциясы Халықты әлеуметтік қорғауды жүзеге асыруды қамтамасыз етеді?
+< variant> әлеуметтік
+< variant> репрессиялық
+<variant> бақылау
+<variant > әскери
+< question> идеологиялық партияны не ажыратады?
+<variant > айқын дүниетанымдық негіз және тұрақты платформа
+< variant> саяси бағдарламадан бас тарту
+< variant > мінез-құлықты болжау мүмкін емес
+< variant> тек әлеуметтік акцияларға қатысу
+<question > саяси қозғалыс пен партияның айырмашылығы неде?
+<variant> еркін ұйымдастыру және ситуациялық
+<variant> қатаң құрылымға ие
+< variant> бағдарламасы мен жарғысы бар
+<variant > мемлекет тарапынан қолдау көрсетіледі
+<question > саяси қақтығыстың өршуіне не ықпал етеді?
+<variant> тікелей зорлық-зомбылық және оппозицияны елемеу
+<variant> Компаға келу
+<variant > Диалог
+< Variant > Парламенттік қарау
+<question > саяси қақтығыстан шығудың сындарлы жолы қандай?
+<variant > институционалдық келіссөздер және келісім жасасу
+<variant> репрессияны күшейту
+< variant > күш қолдану
+<variant> келіспеушілікті басу
+<question> в. Паретоның элиталық теориясының мәні неде?
+<variant > элиталардың тұрақты айналымы бар, олардың кейбіреулері басқаларын ауыстырады
+< variant> қоғамның барлық мүшелері тең
+<variant > элиталар тек сайлау арқылы қалыптасады
+<variant > элиталар кездейсоқ билікке түседі
+<question > көшбасшылықтың қай түрі дәстүр мен қалыптасқан нормаларға негізделген?
+< variant> дәстүрлі
+< variant> харизматикалық
+< Variant > Демократиялық
+< Variant > революциялық
+<question > саяси мәдениет қандай функцияны орындайды?
+< variant> азаматтардың саяси жүйесі мен бағдарын жаңғыртуды қамтамасыз етеді
+< variant> қақтығыстарды күшейтеді
+< variant> билікке эмоционалды қатынасты қалыптастырады
+< variant> саяси ақпаратты бұрмалайды
+<question > саяси мәдениеттің субъективті түрін не сипаттайды?
+< variant> өз белсенділігінсіз биліктен шешімдерді күту
+<variant> сайлауға белсенді қатысу
+<variant > саясатқа немқұрайлылық
+< variant> қатысудың жоғары деңгейі
+<question > саяси идеологияның мақсаты қандай?
+< variant> саяси әрекеттер мен мақсаттарды түсіндіретін және негіздейтін көзқарастар жүйесін қалыптастыру
+<variant> ойын-сауық
+< Variant > эстетикалық
+< variant > мемлекет институтын тарату
+<question > қандай идеология теңдік пен әлеуметтік әділеттілікке ұмтылады?
+< variant> Социализм
+<variant> Либерализм
+< Variant > Консерватизм
+< variant> Анархизм
+< question> мажоритарлық сайлау жүйесінің ерекшелігі неде?
+< variant> көпшілік дауысқа ие болған үміткер жеңеді
+< variant> Жеңіс дауыстардың пропорционалды санымен анықталады
+< variant> бір мандатты округтер пайдаланылмайды
+< variant> Жеңіс партиялық тізімге байланысты
+< question> партияның Парламентке өтуі үшін қажетті дауыстардың ең төменгі пайызы қалай аталады?
+<variant > сайлау кедергісі
+<variant > рейтингі
+<variant> мандат шегі
+<variant> заңдылық шегі
+<question > саяси транзит дегеніміз не?
+< variant > авторитарлықтан демократиялық саяси жүйеге көшу
+< variant > демократияның бір түрінен екіншісіне ауысу
+< variant> саяси институттардың жабылуы
+<variant > сайлау процесін жеңілдету
+<question > Саяси модернизация процесіне не тән?
+<variant> институттарды реформалау, азаматтардың қатысуын арттыру және саяси саланы технологиялық дамыту
+<variant> дәстүрлі нормаларды күшейту
+< variant > билікті орталықтандыру
+<variant> бейресми нормалардың Үстемдігі
+< question> ішкі саясаттың мазмұнына не кіреді?
+< variant> Денсаулық сақтау, білім беру, әлеуметтік қорғау
+<variant> сыртқы экономикалық қызмет
+<variant > қорғаныс мәселелері
+<variant> халықаралық келіссөздер
+< question > бағдарламалардың қайсысы Қазақстанның әлеуметтік саласындағы басымдықтарды көрсетеді?
+<variant> Жұмыспен қамту жол картасы
+<Variant> жаңа Қазақстан
+<variant> Нұрлы жол
+< Variant> Цифрлық Қазақстан
+< question> тиімді мемлекеттік басқарудың кілті қандай принциптер болып табылады?
+<variant> ашықтық, есеп беру және нәтижеге бағдарлау
+< variant> барлық шешімдерді бір органда орталықтандыру
+< variant> рәсімдердің құпиялылығы
+< variant > репрессияны қолдану
+<question> электрондық үкімет e-Gov дегеніміз не?
+< variant > азаматтардың интернет арқылы мемлекеттік қызметтерге қол жеткізуін қамтамасыз ететін Платформа
+< variant > онлайн дауыс беру жүйесі
+<variant > саяси партияларды бақылау технологиясы
+<variant > әскери қауіпсіздік жүйесі
+< question>саясаттану ғылыми пән ретінде нені зерттейді?
+< variant>Саяси институттар, процестер және қатынастар
+< Variant > қаржы ағындары
+<variant>моральдық нормалар
+< Variant > өнер және дін
+< question>саясаттанудың ғылым ретіндегі міндеті қандай?
+< variant>саяси процестерді талдау, түсіндіру және болжау
+< variant>биліктің көркем бейнелерін жасау
+<variant > экономиканы бақылау
+< variant>діни моральды нығайту
+<question > Аристотель қандай мемлекет формасын таңдады?
+< Variant > саясат-басқарудың аралас түрі
+< Variant > Демократия
+<variant>Олигархия
+< variant>абсолютті монархия
+<question>ағартушылық ойшылдардың қайсысы биліктің бөлінуін жақтады?
+< Variant > Монтескье
+<variant>Руссо
+< Variant > Макиавелли
+< variant>Томас Гоббс
+<question > саяси билікті басқа билік түрлерінен не ажыратады?
+<variant > қоғамдағы заңды зорлық-зомбылыққа монополиясы бар
+<variant > дәстүрге негізделген
+<variant > институттарды пайдаланбайды
+<variant > тек діни салаға қатысты
+< question>қай автор биліктің заңдылық теориясын тұжырымдады?
+< variant>Макс Вебер
+< Variant > Джон Локк
+< Variant > Карл Маркс
+<variant>Бенжамен Констан
+< question>плюрализм демократияның белгісі ретінде нені көрсетеді?
+<variant>бәсекелес саяси күштер мен пікір бостандығы бар
+< variant>бір партияның үстемдігінде
+< variant > билікті тағайындауда
+<variant>оппозицияға тыйым салу
+<question > тоталитарлық режимге не тән?
+< variant>мемлекеттің өмірдің барлық аспектілерін бақылауы
+<variant > БАҚ Тәуелсіздігі
+< variant > азаматтардың шешім қабылдауға қатысуы
+< variant>саяси плюрализм
+< question>саяси жүйенің элементтеріне не кіреді?
+<variant > Мемлекет, партиялар, қозғалыстар, құқықтық база, саяси мәдениет
+< variant>тек парламент
+<variant > бұқаралық ақпарат құралдары және полиция
+< Variant > Қаржы корпорациялары
+<question > саяси жүйенің қандай функциясы шешім қабылдауды қамтамасыз етеді?
+< variant > мақсат қою функциясы
+<variant>реттеуші
+< Variant > коммуникативті
+< variant>саяси қатысу функциясы
+< question>мемлекеттік аппарат дегеніміз не?
+<variant>билікті жүзеге асыратын мекемелер жиынтығы
+< variant>саясаткерлер тобы
+< variant > идеялар жиынтығы
+<variant > БАҚ және шіркеу
+< question>республика қандай түрге жатады?
+< variant>демократиялық басқару нысаны
+< variant>Монархия
+< Variant > Авторитаризм
+< variant>Анархия
+<question>билеуші партияны не ажыратады?
+<variant > ол атқарушы билікті басқарады
+<variant>ол сайлауға қатыспайды
+<variant > ол оппозициялық
+<variant > оның Жарғысы жоқ
+<question > партиялардың қандай қызметі саяси әлеуметтенуге ықпал етеді?
+<variant>ақпараттық-ағарту
+< variant>репрессиялық
+<variant>бақылау
+< variant>әкімшілік
+<question>әр түрлі әлеуметтік топтар арасында қайшылықтың қандай түрі пайда болады?
+< Variant > саяси
+<variant>Тұлғаішілік
+<variant>Мемлекетаралық
+< Variant > аймақтық
+< question>демократиялық қоғамда саяси қақтығысты шешудің қай әдісі қолайлы?
+<variant > Диалог және ымыраға келу
+< Variant > Ультиматум
+<variant>қуат қысымы
+<variant>елемеу
+< question>саяси элитаның құрамына кім кіреді?
+<variant > негізгі саяси шешімдер қабылдайтын басшы лауазымды тұлғалар
+< variant > елдің барлық азаматтары
+< variant>тек оппозициялық саясаткерлер
+<variant > демонстрацияларға қатысушылар
+< question>көшбасшылықтың қандай стилі топтың пікіріне назар аударумен сипатталады?
+< Variant > Демократиялық
+< Variant > авторитарлық
+< variant>дәстүрлі
+< variant>харизматикалық
+< question>табысты саяси әлеуметтенудің нәтижесі қандай?
+< variant>саяси процестерге саналы түрде қатысу
+< variant > азаматтардың саясаттан кетуі
+<variant > сайлауға қатысудың төмендеуі
+< variant>саяси апатия
+<question > саяси мәдениеттің қай түрі билікті пассивті қабылдаумен байланысты?
+< variant>Subdannic
+< Variant>Партиципатор
+< Variant > Демократиялық
+< variant>анархист
+<question > саяси идеологияны не анықтайды?
+<variant>әртүрлі әлеуметтік топтардың мүдделерін көрсететін идеялар жүйесі
+< variant > билікті эмоционалды қабылдау
+< variant > азаматтардың білім деңгейі
+< variant > елдің географиялық орны
+< question>қандай идеология жеке адамның құқықтары мен бостандықтарына басымдық береді?
+<variant>Либерализм
+< Variant > Консерватизм
+<variant>ұлтшылдық
+< Variant > Коммунизм
+<question > қай сайлау принципі бір азамат-бір дауыс дегенді білдіреді?
+<variant>тең сайлау құқығы қағидаты
+<variant > жасырын дауыс беру принципі
+<variant > жанама дауыс беру принципі
+<variant > міндетті дауыс беру принципі
+<question > қандай сайлау жүйесі Парламентте тұрақты көпшіліктің қалыптасуына ықпал етеді?
+< variant>мажоритарлық
+<variant>пропорционалды
+< variant>аралас
+<variant>айналмалы
+< question>демократиялық транзит нені білдіреді?
+< variant > авторитарлық режимнен демократиялық режимге көшу
+< variant>бір партиялық жүйеге көшу
+< variant>абсолютті монархияға оралу
+<variant>сайлаудан бас тарту
+< question>саяси модернизацияның белгісі неде?
+< variant>азаматтардың институттарды басқаруға және дамытуға қатысуын күшейту
+<variant>дәстүрлі басқару нысандарын сақтау
+< variant>саяси құрылымды жеңілдету
+< variant > билікті орталықтандыру
+< question>мемлекеттік саясат ұғымы нені қамтиды?
+< variant > мемлекеттің қоғам мүдделерін іске асыру жөніндегі қызметі
+<variant>жеке бастамалар
+<variant > әлеуметтік жарнама
+<variant > БАҚ-тағы сын
+<question > Қазақстанда Мемлекеттік қызметтерді цифрландыруға қандай бағдарлама бағытталған?
+< Variant>Цифрлық Қазақстан
+<variant>Жасыл Ел
+<Variant>Рухани жаңғыру
+<variant>Нұрлы Жол
+<question>мемлекеттік басқару дегеніміз не?
+< variant>мемлекеттік органдардың қоғамды басқару жөніндегі ұйымдастырылған қызметі
+< variant > қоғамды стихиялық реттеу
+< variant>саяси партиялардың жұмысы
+< variant > бұқаралық ақпарат құралдарының қызметі
+< question>тиімді мемлекеттік басқарудың негізінде қандай принцип жатыр?
+< variant>заңдылық, ашықтық және есеп беру
+< variant>репрессия
+< variant>құпиялылық
+<variant>шенеуніктердің артықшылықтары
+< question>саясаттануды зерттеудің негізгі пәні қандай?
+< variant>Саяси билік, мемлекет, саяси институттар
+<variant>өндірістік қатынастар
+< variant>экологиялық қауіпсіздік
+<variant > моральдық-этикалық категориялар
+< question>саяси жүйелерді салыстыру кезінде қай әдіс жиі қолданылады?
+<variant>салыстырмалы
+< Variant > статистикалық
+< Variant > философиялық
+< variant>өмірбаяндық
+<question > Жан-Жак Руссо қандай идеяны жақтады?
+< variant>мемлекеттің негізі ретінде халықтық егемендік
+<variant > билік элитаға тиесілі болуы керек
+< variant > авторитарлық басқару қажеттілігі
+< variant>абсолютті монархияны тану
+<question>қазақ ойшылдарының қайсысы қоғамдық-саяси ойдың дамуына үлес қосты?
+< Variant > Абай Құнанбайұлы
+< Variant > Абылай хан
+<variant > Хакім Абай
+<variant>Әл-Фараби
+<question > саяси биліктің ерекшелігі неде?
+< variant>заңды зорлық-зомбылықты пайдалану құқығында
+< variant > тек экономиканы басқаруда
+< variant > шіркеуге байланысты
+< variant>қоғамнан толық өзін-өзі жою
+<question > биліктің заңдылығының қандай түрі заңдылық пен ережелерге сенуге негізделген?
+< variant>ұтымды-заңды
+< variant>харизматикалық
+< variant>дәстүрлі
+< Variant > эмоционалды
+< question>қандай режим жеке тұлғаға табынуға және өмірдің барлық салаларын бақылауға сүйенеді?
+< Variant > тоталитарлық
+< Variant > Демократиялық
+< Variant > авторитарлық
+<variant>либералды
+< question>демократиялық режимге қандай белгі тән?
+< variant>саяси плюрализм және тәуелсіз БАҚ
+<variant > саяси партияларға тыйым салу
+<variant>күш құрылымдарының Үстемдігі
+<variant > сайлаудың болмауы
+< question>саяси жүйе дегеніміз не?
+<variant>билік жүзеге асырылатын институттар, нормалар, құндылықтар жиынтығы
+< variant>діни нормалар жиынтығы
+< variant > мемлекеттің экономикалық моделі
+<variant>білім беру жүйесі
+< question>азаматтардың саясатқа қатысуын қандай функция қамтамасыз етеді?
+< variant>саяси әлеуметтену функциясы
+< variant>репрессиялық
+< Variant > интегративті
+<variant>бақылау
+<question > кез-келген мемлекеттің белгісі қандай?
+<variant>аумақ, халық, билік және егемендік
+<variant > оппозицияның болуы
+< variant>Саяси партия
+<variant>халықаралық тану
+<question > басқарудың қай түрі Мемлекет басшысының сайлануын болжайды?
+< Variant > Республика
+< variant>абсолютті монархия
+< variant>Теократия
+<variant > Империя
+< question>бұқаралық партияға тән белгілердің қайсысы?
+<variant>кең әлеуметтік база, сайлаушылармен тұрақты жұмыс
+<variant > тек элитаға сүйену
+< variant>әлсіз ұйымдастыру және идеологияның болмауы
+< variant>саяси қызметтен бас тарту
+<question > саяси партиялардың негізгі қызметі қандай?
+< variant>азаматтардың мүдделерін білдіру және мемлекетті басқаруға қатысу
+< variant>мәдени саясатты жүзеге асыру
+< variant > ғылыми журналдар шығару
+<variant > кемелерді бақылау
+<question > саяси қақтығыстың мәні неде?
+< variant>саяси субъектілердің мүдделеріне қайшы
+< variant > білім деңгейіндегі айырмашылықтар
+< variant>экологиялық ресурстар үшін күресте
+< variant>Мәдениет туралы дауларда
+<question > саяси қақтығысты шешудің қай жолы ең сындарлы?
+<variant>келіссөздер және ымыраға келу
+<variant>оппозиция талаптарын елемеу
+<variant>қайшылықтардың шиеленісуі
+< Variant > Ультиматум
+< question>в. Паретоның пікірінше, қоғамның элитасын кім құрайды?
+< variant>саяси шешімдер қабылдауға нақты әсер ететіндер
+<variant > ірі бизнеске иелік ететін адамдар
+<variant>барлық білімді азаматтар
+<variant > діни қызметкерлер
+< question>харизматикалық көшбасшылыққа не тән?
+<variant > көшбасшының жеке қасиеттеріне сенуге негізделген
+< variant>Заңның беделіне негізделген
+<variant > дәстүрдің салдары болып табылады
+<variant > кездейсоқ таңдау негізінде пайда болады
+<question > саяси мәдениеттің қандай түрі азаматтық қоғамның қалыптасуына ықпал етеді?
+< Variant>Партиципатор
+< variant>Subdannic
+< variant>анархиялық
+< Variant > авторитарлық
+<question > саяси әлеуметтену дегеніміз не?
+< variant>жеке тұлғаны саяси өмірге оқыту және тәжірибе арқылы енгізу процесі
+<variant > мәдени дәстүрлерді игеру
+<variant > әлеуметтік оқшаулау
+< Variant > қаржылық бейімделу
+< question>саяси идеологияның барлық түрлерін не біріктіреді?
+< variant>билікке ұмтылу және белгілі бір әлеуметтік топтардың мүдделерін жүзеге асыру
+< variant>діни көзқарастардың ортақтығы
+<variant>мораль нормаларын сақтау міндеттілігі
+< variant>экономикаға деген көзқарастағы бірлік
+<question > қай идеология дәстүрді сақтауға бағытталған?
+< Variant > Консерватизм
+<variant>Либерализм
+< variant>Социализм
+< variant>Анархизм
+<question > қай орган елдегі сайлауды ұйымдастырады және бақылайды?
+<variant > сайлау комиссиясы
+<variant>Сыртқы істер министрлігі
+< variant>сот палатасы
+< Variant > Парламент
+<question > сайлау құқығы нені білдіреді?
+< variant>азаматтардың сайлауға қатысу және сайлану құқығы
+<variant > депутаттарды тағайындау мүмкіндігі
+<variant>шенеуніктердің артықшылығы
+< variant > мемлекет атынан Мандат
+<question > саяси модернизацияны не сипаттайды?
+<variant > институттарды дамыту, азаматтардың рөлін арттыру және саяси процестерді жаңарту
+<variant>дәстүрлі нормаларды сақтау
+<variant>сайлаудан бас тарту
+<variant > әскери биліктің басым болуы
+< question>транзитология нені зерттейді?
+< variant > авторитаризмнен демократияға көшу процестері
+< variant>сауда жолдары
+<variant>көші-қон процестері
+<variant > көшбасшылық модельдері
+<question > Мемлекеттік әлеуметтік саясат нені қамтиды?
+< variant>халықтың осал топтарын қолдау, Денсаулық сақтау, білім беру
+<variant > армияны бақылау
+< variant > шикізат экспорты
+<variant>туризмді дамыту
+< question>мемлекеттік басқаруды цифрландыруға қандай бағдарлама бағытталған?
+< Variant>Цифрлық Қазақстан
+<Variant>Рухани жаңғыру
+<Variant>Салауатты Қазақстан
+<variant>Жасыл экономика
+< question>Мемлекеттік басқарудың мақсаты не?
+< variant>қоғам мүддесі үшін басқару процестерін ұйымдастыру және үйлестіру
+< variant>мемлекетті корпорацияға айналдыру
+<variant > Саяси қуғын-сүргінді күшейту
+<variant > бақылауды жою
+<question > мемлекеттік басқарудағы есеп беру принципі нені білдіреді?
+< variant>мемлекеттік органдардың өз іс-әрекеттерін түсіндіру және негіздеу міндеті
+<variant > биліктің Құпия шешімдері
+<variant>есеп беруден бас тарту
+<variant > Азаматтарды бақылау
+< question>саясаттану ғылым ретінде қандай қызмет атқарады?
+< variant>саяси мәдениет пен азаматтық белсенділікті қалыптастыруға ықпал етеді
+< variant>валюта бағамын анықтайды
+<variant > сот билігін ұйымдастырады
+< variant>діни саланы басқарады
+< question>қай пән саясаттанумен тығыз байланысты деп саналады?
+< variant>Әлеуметтану
+< Variant > Физика
+< variant>География
+< Variant > әдебиеттану
+<question > ежелгі философтардың қайсысы идеалды мемлекет тұжырымдамасын бірінші болып тұжырымдады?
+< Variant > Платон
+<variant>Аристотель
+<variant>Цицерон
+<variant>Фукидид
+<question > Әл-Фараби өз еңбектерінде қандай билік моделін ұсынды?
+<variant > ізгілікке, ақылға және әділдікке негізделген билік
+<variant>полиция мемлекеті
+< Variant > абсолютті монархия
+< variant>діни зорлық-зомбылық арқылы билік
+<question > саяси биліктің ерекшелігі неде?
+< variant>қоғамға заңды әсер ету мүмкіндігі
+< variant>негізсіз күш қолдану
+< variant>Мәдени іс-шараларды ұйымдастыру
+<variant>нормалар мен заңдардан бас тарту
+<question > заңдылықтың қандай түрі дәстүр мен әдет-ғұрыппен байланысты?
+< variant>дәстүрлі
+< variant>харизматикалық
+<variant > ұтымды
+< Variant > эмоционалды
+< question>авторитарлық режим немен сипатталады?
+<variant > қоғамға билікті бақылау және саяси бостандықтарды шектеу
+< variant > саяси бәсекелестіктің жоғары деңгейі
+< variant > вертикаль күшінің болмауы
+< Variant > парламенттік басқару нысаны
+< question>демократиялық режимнің маңызды элементі қандай?
+<variant>ашық сайлау және биліктің бөлінуі
+< variant > билікті орталықтандыру
+< variant > Парламентті президент етіп тағайындау
+< variant>билікті монархия арқылы айналдыру
+< question>саяси жүйе нені қамтиды?
+<variant>институттар, нормалар және саяси мәдениеттер жиынтығы
+< variant>тек мемлекеттік органдар
+<variant > Ақпараттық технологиялар
+< Variant > Қаржы корпорациялары
+< question>саяси жүйе қандай функцияны орындайды?
+<variant > қоғамды басқару және қақтығыстарды шешу
+< Variant > эстетикалық
+< Variant > мәдени
+<variant>өндірістік
+<question > құқықтық мемлекетті не ажыратады?
+< variant > заңның үстемдігі және оның алдындағы барлығының теңдігі
+<variant>партиялық идеологияның Үстемдігі
+< variant>монархтың еркіне басымдық беру
+< variant>азаматтық құқықтарды Алып тастау
+< question>мемлекеттің қандай функциясы құқықтық тәртіпті қорғауға бағытталған?
+< variant>ішкі
+< Variant > саяси
+< variant>әлеуметтік
+< Variant > экономикалық
+<question>Кадрлық партияның белгісі неде?
+<variant>сайлауға бағдарлау және әлсіз ұйымдастырушылық құрылым
+< variant>жаппай мүшелік және идеологиялық негіз
+<variant>митингілерге тұрақты қатысу
+< variant>міндетті мемлекеттік тіркеу
+< question>қозғалыстардың саяси партиялардан айырмашылығы неде?
+< variant>икемді құрылымы мен уақытша сипаты
+< variant>міндетті идеология
+<variant>сайлау жиілігі
+< variant > бюджеттен қаржыландыру
+<question > саяси қақтығыстың себебі қандай фактор болып табылады?
+< variant>саяси мүдделердегі айырмашылық
+< Variant > Климаттың өзгеруі
+< variant>әдебиет туралы дау
+<variant > маусымдық құбылыстар
+<question > саяси қақтығыстың қандай шешімі демократиялық болып саналады?
+<variant>институционалдық механизмдер арқылы ымыраға келу
+< Variant > Ультиматум
+<variant > әскери төңкеріс
+< variant>тараптарды елемеу
+<question > саяси элита дегеніміз не?
+< variant>негізгі саяси шешімдер қабылдайтын тұлғалар тобы
+<variant>жоғары білімі бар барлық азаматтар
+< variant>мәдениетте беделі бар тұлғалар
+< variant>шағын бизнес өкілдері
+< question>демократиялық көшбасшылықтың мәні неде?
+< variant > мүдделерді үйлестіру және топтың пікірлерін есепке алу
+<variant > күшпен бағыну
+< variant > дәстүрлер арқылы басқаруда
+< variant > харизманың үстемдігінде
+< question>саяси мәдениет нені қамтиды?
+< variant>саяси білім, нормалар және мінез-құлық үлгілері
+< variant>сән трендтері мен көзқарастары
+< variant>тарихи шежірелер
+<variant>ауа райы туралы ақпарат
+< question>саяси мәдениеттің қалыптасуына не ықпал етеді?
+< variant>білім беру және қатысу арқылы саяси әлеуметтену
+< variant > биліктің жабылуы
+<variant > БАҚ цензурасы
+< variant > азаматтарды оқшаулау
+<question > саяси идеология дегеніміз не?
+< variant>билік, қоғам және оның даму мақсаттары туралы көзқарастар жүйесі
+< variant > эстетикалық білдіру тәсілі
+< variant>манипуляция механизмі
+< variant>заңнамалық акт
+< question>қандай идеология әлеуметтік әділеттілікке қол жеткізуге бағытталған?
+< variant>Социализм
+< Variant > Консерватизм
+<variant>Либерализм
+< variant>Анархизм
+< question>азаматтардың мемлекетті басқаруға қатысуын не қамтамасыз етеді?
+<variant > сайлау
+<variant>шенеуніктерді тағайындау
+< variant > Президенттің жарлықтары
+< variant > сотқа жүгіну
+<question > қандай жүйе мандаттарды пайызбен бөлетін партияларға дауыс беруді қамтиды?
+<variant>пропорционалды
+< variant>мажоритарлық
+< variant>аралас
+< Variant > өкілдік
+< question>демократиялық транзитті не сипаттайды?
+< variant > авторитаризмнен демократиялық институттарға көшу
+< variant > тоталитарлық режимді нығайту
+< variant>монархияға оралу
+< variant>азаматтардың саясатқа қатысудан бас тартуы
+<question > Саяси модернизация нені білдіреді?
+<variant>саяси институттарды дамыту, азаматтардың қатысуы, билікті технологияландыру
+< variant>саяси өмірді жеңілдету
+< variant > конституцияның күшін жою
+<variant > әскери жағдайды енгізу
+< question>мемлекеттік саясаттың мақсаты қандай?
+< variant > билік пен институттар жүйесі арқылы қоғамның мүдделерін жүзеге асыру
+< variant>көлеңкелі экономиканың рөлін күшейту
+< variant > бизнес мүддесі үшін Лоббизм
+< variant > азаматтардың құқықтарын шектеу
+<question > Мемлекеттік әлеуметтік саясатқа не кіреді?
+< variant>білім беруді, денсаулық сақтауды, аз қамтылғандарды қорғауды қолдау
+< variant > армияны қаржыландыру
+< variant > ядролық әлеуетті дамыту
+<variant > мұнай бағасын реттеу
+<question>мемлекеттік басқару дегеніміз не?
+< variant>қоғамда мемлекеттік билікті ұйымдастыру және іске асыру
+<variant > сайлауға қатысу
+<variant > БАҚ арқылы насихаттау
+< variant>соттардың жұмысы
+<question>қазіргі заманғы мемлекеттік басқарудың негізінде қандай принциптер жатыр?
+< Variant > ашықтық, есеп беру және тиімділік
+< Variant>репрессия
+< variant>жабу
+< variant>саяси идеологияландыру
+< question>демократиялық қоғамдағы саясаттанудың міндеті қандай?
+< variant>саяси мәдениет пен белсенді азаматтықты қалыптастыру
+< variant>бір партиялық режимді орнату
+< variant>діни ілімдерді насихаттау
+<variant > экономиканы бақылау
+<question > саяси талдаудың қандай әдісі бақылау мен эмпирикалық деректерге негізделген?
+< variant>эмпирикалық
+< variant>Тарихи
+< Variant > Нормативтік
+< Variant > метафизикалық
+<question > Аристотель саяси ойдың дамуында қандай рөл атқарды?
+<variant > әділ басқару Доктринасын құрды және мемлекет формаларын жіктеді
+< variant>анархия идеясын дамытты
+< variant>мемлекеттің қажеттілігін жоққа шығарды
+<variant>диктатураны жақтады
+<question > қазақ ағартушыларының қайсысы ұлттық саяси бірегейлікті дамытуға үлес қосты?
+< Variant > Шоқан Уәлиханов
+<Variant>Мұхтар Әуезов
+< Variant > Абай Құнанбайұлы
+< Variant > Қаныш Сәтбаев
+<question > анықтамалардың қайсысы саяси биліктің мәнін жақсы көрсетеді?
+< variant>заңдылық пен институттарға сүйене отырып, қоғамды басқару қабілеті
+<variant > зорлық-зомбылықты пайдалану мүмкіндігі
+< variant>өндіріс құралдарына иелік ету
+<variant > мәдениеттің артықшылығы
+< question>биліктің заңдылығының қай түрі көшбасшының жеке қасиеттеріне негізделген?
+< variant>харизматикалық
+< variant>ұтымды-заңды
+< variant>дәстүрлі
+<variant>партиялық
+< question>демократиялық режимді авторитарлық режимнен не ажыратады?
+< variant > азаматтардың сайлау арқылы шешім қабылдауға қатысуы
+<variant > саяси партияларға тыйым салу
+< variant>діни ұйымдарды бақылау
+< variant>көшбасшыларды жоғарыдан тағайындау
+<question > тоталитарлық режимге не тән?
+<variant > мемлекеттің қоғамды жан-жақты бақылауы
+< variant>партиялар мен бұқаралық ақпарат құралдарының көптігі
+< variant > биліктің ауысуы
+<variant > биліктің бөлінуі
+< question>қандай анықтама саяси жүйені дәл сипаттайды?
+< variant>биліктің жұмыс істеуін қамтамасыз ететін институттар мен нормалардың жиынтығы
+<variant>банктерді басқару жүйесі
+< variant>саясаткерлер тобы
+<variant>кәсіподақтар ұйымы
+< question>саяси жүйе қандай функцияны орындайды?
+< Variant > саяси әлеуметтену және тұрақтылықты қамтамасыз ету
+< Variant>экономикалық
+< Variant > идеологиялық
+< Variant > коммерциялық
+< question>қандай элемент мемлекет белгілеріне жатады?
+< variant>мемлекеттік құрылымдар мен аумақтың болуы
+< variant > халықтың маусымдық көші-қоны
+< variant>Сән және әдет-ғұрып
+<variant > Интернетке кіру
+< question>құқықтық қоғамдағы мемлекеттің басты функциясы қандай?
+< variant > азаматтардың құқықтары мен бостандықтарын қорғау
+<variant>банктерді басқару
+< variant>бір дінді қолдау
+<variant>жеке компанияларды құру
+<question > саяси партиялардың негізгі қызметі қандай?
+< variant>саяси жүйеде азаматтардың мүдделерін білдіру
+< variant>Мәдени іс-шараларды өткізу
+< variant>спорттық ойындарды ұйымдастыру
+<variant>сауда операцияларын бақылау
+< question>қозғалысты партиядан не ажыратады?
+< variant>аз формальды құрылымға және уақытша мақсаттарға ие
+< variant>атқарушы биліктің бөлігі болып табылады
+<variant > тек әлеуметтік желілерде бар
+< variant>көшбасшы бола алмайды
+<question > саяси қақтығыстардың себебі қандай фактор болып табылады?
+< variant>саяси мүдделер мен мақсаттар арасындағы айырмашылық
+<variant>маусымдық
+< variant > мәдениет мәселелері
+< variant>технологиялық даулар
+< question>шешімдердің қайсысы саяси қақтығыстың ауырлығын төмендетуге ықпал етеді?
+<variant > Диалог және ымыраға келу
+< variant > талаптарды елемеу
+<variant > санкцияларды күшейту
+<variant > зорлық-зомбылық арқылы мәжбүрлеу
+<question > саяси теорияға сәйкес элитаның құрамына кім кіреді?
+< variant>негізгі саяси шешімдер қабылдайтын топтардың өкілдері
+< variant>белсенді әлеуметтік желі қолданушылары
+< variant > елдің барлық азаматтары
+<Variant > журналистер мен блогерлер
+< question>көшбасшылықтың қандай түрі Заң мен ережелерге сүйенеді?
+< variant>ұтымды-заңды
+< variant>харизматикалық
+< variant>дәстүрлі
+< Variant > популистік
+< question>саяси мәдениеттің қалыптасуына не ықпал етеді?
+< variant>саяси әлеуметтену және сайлауға қатысу
+< variant > азаматтарды оқшаулау
+< variant>қоғамға қатысудан бас тарту
+< variant>өткен жадты өшіру
+<question > саяси мәдениеттің қай түрі азаматтардың белсенді қатысуына негізделген?
+< Variant>Партиципатор
+< Variant > патриархалдық
+< variant>Subdannic
+< Variant > авторитарлық
+<question > саяси идеология дегеніміз не?
+< variant>саяси процестер мен мақсаттарды түсіндіруге бағытталған көзқарастар жиынтығы
+< variant>жарнамалық партиялар
+<variant>дауыс беруге арналған нұсқаулық
+<variant > қоғамдағы мінез-құлық кодексі
+<question > қандай идеология дәстүрлі құндылықтар мен институттарды сақтауды қамтиды?
+< Variant > Консерватизм
+< variant>Социализм
+<variant>Либерализм
+< variant>Анархизм
+<question > белсенді сайлау құқығы нені білдіреді?
+<variant > дауыс беру құқығы
+<variant > сайлану құқығы
+<variant>сайлауды бақылау құқығы
+< variant > партияларды қаржыландыру құқығы
+<question>белгілі бір кандидатқа дауыс беру кезінде сайлау жүйесінің қандай түрі қолданылады?
+< variant>мажоритарлық
+<variant>пропорционалды
+< variant>аралас
+< variant>Делегативті
+<question > саясаттағы транзиттік кезең нені білдіреді?
+< variant > авторитарлық режимнен демократиялық режимге көшу
+< variant>мәдени дағдарыс кезеңі
+< variant > парламенттік басшылықтың ауысуы
+< variant>монархияға оралу
+< question>қандай белгілер саяси модернизацияны көрсетеді?
+< variant>азаматтардың қатысуын арттыру және демократия институттарын дамыту
+<variant>дәстүрлі институттарды нығайту
+< variant > парламенттердің жабылуы
+<variant > электрондық дауыс беруден бас тарту
+<question > мемлекеттік саясат нені қамтиды?
+<variant > қоғамдық міндеттерді шешу бойынша келісілген билік әрекеттері
+< variant > бизнес құрылымдарының жеке шешімдері
+< variant>әлеуметтік медиа науқандары
+<variant>бейресми бұйрықтар
+< question>ҚР-да цифрландырудың басымдықтарын қандай бағдарламалық құжат анықтайды?
+< Variant>Цифрлық Қазақстан
+<variant>Жасыл Ел
+<variant>Нұрлы жол
+<variant>Қауіпсіз ел
+<question>мемлекеттік басқару нені білдіреді?
+<variant > институттар мен механизмдер жүйесі арқылы саяси билікті жүзеге асыру
+<variant > қоғамдық ұйымдардың әсері
+<variant > БАҚ қызметі
+<variant>жеке тұлғалардың қаржысын басқару
+<question > мемлекеттік басқарудағы ашықтықты қандай қағидат қамтамасыз етеді?
+<variant>есеп беру және ашықтық
+<variant > қатты орталықтандыру
+< variant>жасырын шешім қабылдау
+< variant>ақпарат монополиясы
+< question>саясаттану пәніне не кіреді?
+< variant>саяси процестерді, институттарды, билікті талдау
+<variant > климаттың өзгеруін зерттеу
+<variant>көркем шығармалардың сипаттамасы
+<variant > отбасылық дәстүрлерді зерттеу
+< question>Саяси институттар мен режимдерді зерттеуде қандай әдістер қолданылады?
+< variant>эмпирикалық-статистикалық
+< Variant > мифологиялық
+< variant>көркем
+<variant>эзотерикалық
+< question>Платонға қандай идея тиесілі?
+< variant>мемлекетті философтар басқаруы керек
+< variant > заңның үстемдігі
+< variant > мемлекеттің толық болмауы
+< Variant > Статизм және диктатура
+< question>әл-Фараби саясат аясында не ұсынды?
+< variant>ақыл мен адамгершілікке негізделген үйлесімді қоғам
+< variant>монархтың абсолютті күші
+< variant > халықтың философтарға бағынуы
+< variant > биліктің революциялық ауысуы
+<question > саяси билікті басқа билік түрлерінен не ажыратады?
+<variant>жалпыға бірдей тану және институционалдық сипат
+< variant>діни негіздердің болуы
+< variant > күш қолдану
+<variant>моральмен тікелей байланыс
+<question > заңдылықтың қандай түрі көшбасшының керемет қасиеттеріне сенуге негізделген?
+< variant>харизматикалық
+< variant>дәстүрлі
+< Variant > құқықтық
+< Variant > Парламенттік
+<question > тоталитарлық режимнің белгісі неде?
+< variant>қоғам өмірінің барлық аспектілерін толық бақылау
+<variant>ашық саяси бәсекелестік
+< variant > биліктің ауысуы
+<variant>жариялылық
+< question>демократиялық режимге не тән?
+< variant > биліктің ашықтығы және азаматтардың саясатқа қатысуы
+< Variant>репрессия
+<variant>оппозицияны жою
+<variant>билік бірлігі
+< question>саяси жүйе қандай функцияны орындайды?
+< variant>саяси процестерді реттеу және қоғамның интеграциясы
+<variant>өндірістік
+< variant>әскери
+< Variant>экономикалық
+< question>саяси жүйенің құрылымына не кіреді?
+< variant>институттар, партиялар, нормалар, мәдениет, билік қатынастары
+< variant>тек мемлекеттік органдар
+<variant>кәсіподақтар мен бизнес қауымдастықтар
+<variant > жергілікті басқару
+<question > құқықтық мемлекетті не ажыратады?
+< variant > заңның үстемдігі және адам құқықтарын қорғау
+< variant>монархтың абсолютті күші
+<variant>әдет-ғұрыптардың таралуы
+< variant>дінді бақылау
+<question > мемлекеттің ішкі функциясы қандай?
+< Variant > құқық қорғау
+< Variant > дипломатиялық
+<variant>Қорғаныс
+< Variant > сауда
+<question > саяси партияны не ажыратады?
+<variant>сайлау мен саяси билік үшін күреске қатысу
+< variant>уақытша сипаты және Жарғының болмауы
+< variant>наразылық белсенділігі
+< variant>гуманитарлық қызмет
+<question > саяси қозғалысты не сипаттайды?
+< variant>жұмсақ құрылым және белгілі бір мақсаттарға баса назар аудару
+< variant>қатаң иерархия және тұрақтылық
+< variant>саяси үстемдікке ұмтылу
+< variant > Парламенттегі үстемдік
+<question > саяси қақтығыстың көзі неде?
+< variant>саяси мүдделер мен көзқарастардың айырмашылығы
+<Variant > Климат
+<variant > заңнаманың болмауы
+< variant>Сән
+<question > жанжалды шешудің қандай әдісі заңды мемлекетке тән?
+<variant > сайлау және сот сияқты институционалдық механизмдер
+< variant > күш қолдану
+< variant>ауызша дәстүрлер
+<variant>тікелей демократия
+< question>саяси элитаға кім кіреді?
+<variant > стратегиялық саяси шешімдер қабылдаушылар
+<variant>барлық мемлекеттік қызметкерлер
+< variant>тек депутаттар
+< variant > ғылым өкілдері
+< question>көшбасшылықтың қандай стилі ұжымдық пікір мен қатысуға негізделген?
+< Variant > Демократиялық
+< Variant > авторитарлық
+< variant>харизматикалық
+< Variant > бюрократиялық
+< question>саяси мәдениет нені қамтиды?
+<variant > саясаттағы білім, көзқарас және мінез-құлық кешені
+< variant>тек заңдар туралы білім
+<variant > дауыс беру қабілеті
+<variant>партиялық тиістілік
+< question>саяси мәдениеттің дамуына не ықпал етеді?
+< variant>білім беру және азаматтардың саясатқа қатысуы
+< variant>саяси цензура
+< variant>саяси процестен оқшаулау
+<variant > бұқаралық ақпарат құралдарын елемеу
+<question > саяси идеология дегеніміз не?
+< variant>қоғам мен билікке көзқарастардың дүниетанымдық жүйесі
+<variant>партиялық бағдарлама
+< Variant > экономикалық модель
+< Variant > экономикалық стратегия
+< question>қандай идеология жеке бас бостандығы мен нарықтық экономикаға баса назар аударады?
+<variant>Либерализм
+< Variant > Консерватизм
+< variant>Социализм
+< variant>Анархизм
+<question > пассивті сайлау құқығы нені білдіреді?
+<variant > сайлану құқығы
+<variant > дауыс беру құқығы
+<variant>дауыс беруден бас тарту құқығы
+<variant>сайлауды бақылау құқығы
+<question > қандай жүйе әртүрлі партиялардың өкілдігін олардың қолдауына пропорционалды түрде қамтамасыз етеді?
+<variant>пропорционалды
+< variant>мажоритарлық
+< variant>Делегативті
+< variant>аралас
+< question> саяси транзит нені білдіреді?
+< variant>бір саяси режимнен екіншісіне ауысу
+<variant>шенеуніктерді ауыстыру
+<variant>сайлауды жеңілдету
+< variant > билікті әкеден ұлға беру
+< question>Саяси модернизация нені қамтиды?
+<variant > саяси институттарды жаңарту, азаматтардың қатысуы, билікті технологияландыру
+< variant > жүйені сақтау
+<variant > институттарды жеңілдету
+< variant>идеологиядан бас тарту
+< question>әлеуметтік саясаттың мақсаты не?
+< variant>халықтың мұқтаж топтарын қолдау және өмір сүру сапасын жақсарту
+<variant > салықты ұлғайту
+<variant > әскери бюджетті нығайту
+<variant > БАҚ бақылау
+<question > Қазақстандағы цифрлық трансформация бағыттарын қандай мемлекеттік құжат анықтайды?
+< Variant > Цифрлық Қазақстан бағдарламасы
+< Variant > Конституция
+<variant>Білім туралы Заң
+<variant > этика Кодексі
+<question>мемлекеттік басқарудағы есеп беру нені білдіреді?
+<variant > биліктің қоғамға есеп беру міндеттемесі
+<variant>есептерден бас тарту
+< variant > билік Тәуелсіздігі
+<variant>халықты тікелей басқару
+< question>тиімді басқарудың негізінде қандай принцип жатыр?
+< Variant>ашықтық, тиімділік, нәтижеге бағдарлау
+<variant>орталықтандыру және репрессия
+< variant > биліктің жабылуы
+<variant>өмір бойы басқару`;
+
+// ══════════════════════════════════════════
+//  PARSE
+// ══════════════════════════════════════════
+function parseQuestions(raw) {
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  const qs = [];
+  let cur = null;
+  for (const line of lines) {
+    const isQ = /^<\s*question\s*>/i.test(line);
+    const isV = /^<\s*[Vv]ariant\s*>/i.test(line);
+    if (isQ) {
+      if (cur && cur.variants.length >= 2) qs.push(cur);
+      const text = line.replace(/^<\s*question\s*>\s*/i,'').trim();
+      cur = { text, variants: [], answer: 0 };
+    } else if (isV && cur) {
+      const text = line.replace(/^<\s*[Vv]ariant\s*>\s*/i,'').trim();
+      cur.variants.push(text);
+    }
+  }
+  if (cur && cur.variants.length >= 2) qs.push(cur);
+  return qs;
+}
+
+function shuffleQ(q) {
+  const correctText = q.variants[0];
+  const shuffled = [...q.variants].sort(() => Math.random() - 0.5);
+  return { text: q.text, variants: shuffled, answer: shuffled.indexOf(correctText) };
+}
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+const ALL_Q   = parseQuestions(RAW_QUESTIONS);
+const TOURS   = 7;
+const PER_TOUR = 40;
+
+let allTourQ = [];   // question pool pre-split for 7 tours
+let tourScores = []; // {correct, wrong} per tour
+let curTour = 0;     // 0-indexed
+let tourQuestions = []; // 40 q for current tour
+let curQ = 0;
+let score = 0;
+let answered = false;
+
+function buildTourPool() {
+  // Spread 250 questions across 7 tours of 40 (280 total, 30 repeated from original 250)
+  const shuffled = shuffle(ALL_Q);
+  allTourQ = [];
+  for (let t = 0; t < TOURS; t++) {
+    const start = (t * PER_TOUR) % shuffled.length;
+    const slice = [];
+    for (let i = 0; i < PER_TOUR; i++) {
+      slice.push(shuffled[(start + i) % shuffled.length]);
+    }
+    allTourQ.push(slice.map(shuffleQ));
+  }
+  tourScores = new Array(TOURS).fill(null);
+}
+
+// ══════════════════════════════════════════
+//  HOME UI
+// ══════════════════════════════════════════
+function renderHomeDots() {
+  const container = document.getElementById('homeTourdots');
+  container.innerHTML = '';
+  for (let i = 0; i < TOURS; i++) {
+    const d = document.createElement('div');
+    d.className = 'tour-dot';
+    if (tourScores[i] !== null) d.classList.add('done');
+    else if (i === curTour) d.classList.add('active');
+    const pct = tourScores[i] !== null ? Math.round((tourScores[i].correct/PER_TOUR)*100) : '';
+    d.innerHTML = tourScores[i] !== null
+      ? `<span style="font-family:'Space Mono',mono;font-size:9px;color:var(--green)">${pct}%</span>`
+      : `<span style="font-family:'Space Mono',mono;font-size:10px">${i+1}</span>`;
+    container.appendChild(d);
+  }
+  document.getElementById('startLabel').textContent = `${curTour+1}-тур бастау`;
+}
+
+// ══════════════════════════════════════════
+//  QUIZ
+// ══════════════════════════════════════════
+function startQuiz() {
+  if (!allTourQ.length) buildTourPool();
+  tourQuestions = allTourQ[curTour];
+  curQ = 0; score = 0; answered = false;
+  document.getElementById('tourBadge').textContent = `ТУР ${curTour+1} / ${TOURS}`;
+  document.getElementById('navPill').textContent = `Тур ${curTour+1}`;
+  showScreen('quiz');
+  renderQ();
+}
+
+function renderQ() {
+  const q = tourQuestions[curQ];
+  answered = false;
+
+  document.getElementById('qNum').textContent = curQ + 1;
+  document.getElementById('liveScore').textContent = score;
+  document.getElementById('pbf').style.width = ((curQ / PER_TOUR) * 100) + '%';
+  document.getElementById('qnumlbl').textContent = 'СҰРАҚ ' + String(curQ+1).padStart(3,'0');
+  document.getElementById('qtext').textContent = q.text;
+
+  const card = document.getElementById('qcard');
+  card.style.animation = 'none'; card.offsetHeight; card.style.animation = '';
+
+  const grid = document.getElementById('ogrid');
+  grid.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.variants.forEach((v,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'obtn';
+    btn.dataset.idx = i;
+    btn.innerHTML = `<span class="oltr">${letters[i]}</span><span>${v}</span>`;
+    btn.addEventListener('click', () => selectAnswer(i));
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('fb').className = 'fb';
+  document.getElementById('bnext').className = 'bnext';
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = tourQuestions[curQ];
+  const btns = document.querySelectorAll('.obtn');
+  btns.forEach(b => b.disabled = true);
+
+  const correct = q.answer;
+  const isOk = idx === correct;
+  if (isOk) score++;
+  document.getElementById('liveScore').textContent = score;
+
+  btns.forEach((b,i) => {
+    if (i === correct) b.classList.add('correct');
+    else if (i === idx && !isOk) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+
+  const fb = document.getElementById('fb');
+  const fbText = document.getElementById('fbtext');
+  if (isOk) {
+    fb.className = 'fb show ok';
+    fb.querySelector('.fbico').textContent = '✓';
+    fbText.textContent = 'Дұрыс жауап! Жарайсың!';
+    if (Math.random() > 0.6) spawnConfetti(3);
+  } else {
+    fb.className = 'fb show err';
+    fb.querySelector('.fbico').textContent = '✗';
+    fbText.textContent = 'Дұрыс: ' + q.variants[correct];
+  }
+
+  const bnext = document.getElementById('bnext');
+  bnext.className = 'bnext show';
+  bnext.textContent = curQ < PER_TOUR - 1 ? 'Келесі →' : 'Нәтижені көру →';
+}
+
+function nextQ() {
+  curQ++;
+  if (curQ >= PER_TOUR) showResult();
+  else renderQ();
+}
+
+// ══════════════════════════════════════════
+//  RESULT
+// ══════════════════════════════════════════
+function showResult() {
+  tourScores[curTour] = { correct: score, wrong: PER_TOUR - score };
+  const pts = Math.round((score / PER_TOUR) * 100);
+
+  showScreen('result');
+
+  document.getElementById('rpct').textContent = pts + '%';
+  document.getElementById('rscr').textContent = score;
+  document.getElementById('rwrong').textContent = PER_TOUR - score;
+  document.getElementById('rbal').textContent = pts + '/100';
+  document.getElementById('navPill').textContent = pts + ' балл';
+
+  let grade, title, sub;
+  if (pts >= 90) { grade='⬡ ТАМАША'; title='Эксперт!'; sub='Саясаттануды керемет білесің!'; spawnConfetti(20); }
+  else if (pts >= 75) { grade='◈ ЖАҚСЫ'; title='Жақсы нәтиже!'; sub='Өте жақсы, жалғастыр!'; spawnConfetti(8); }
+  else if (pts >= 50) { grade='◇ ОРТАША'; title='Жаман емес!'; sub='Тақырыптарды қайталап, тағы тырыс.'; }
+  else { grade='○ ЖАТТЫҒУ КЕРЕК'; title='Тағы оқы!'; sub='Материалды тереңірек зерттеу қажет.'; }
+
+  document.getElementById('rgrade').textContent = grade;
+  document.getElementById('rtitle').textContent = title;
+  document.getElementById('rsub').textContent = sub;
+
+  // ring animation
+  setTimeout(() => {
+    const circumference = 440;
+    document.getElementById('rfill').style.strokeDashoffset = circumference - (pts/100)*circumference;
+  }, 200);
+
+  // Tour progress dots
+  renderTourProgress();
+
+  // Buttons
+  const isLast = curTour >= TOURS - 1;
+  const btnNext = document.getElementById('btnNextTour');
+  const btnAll  = document.getElementById('btnAllTours');
+  if (isLast) {
+    btnNext.textContent = '🏆 Барлық нәтиже';
+    btnNext.onclick = showAllResults;
+    btnAll.style.display = 'none';
+  } else {
+    btnNext.textContent = `${curTour+2}-тур →`;
+    btnNext.onclick = nextTour;
+    btnAll.style.display = 'inline-flex';
+  }
+}
+
+function renderTourProgress() {
+  const container = document.getElementById('tourProgress');
+  container.innerHTML = '';
+  for (let i = 0; i < TOURS; i++) {
+    const d = document.createElement('div');
+    d.className = 'tp-dot';
+    if (tourScores[i] !== null) {
+      d.classList.add('done');
+      const p = Math.round((tourScores[i].correct/PER_TOUR)*100);
+      d.innerHTML = `<span class="tpn">${p}%</span><span class="tps">Тур ${i+1}</span>`;
+    } else {
+      d.classList.add('pending');
+      d.innerHTML = `<span class="tpn" style="color:var(--muted)">—</span><span class="tps">Тур ${i+1}</span>`;
+    }
+    container.appendChild(d);
+  }
+}
+
+function nextTour() {
+  curTour++;
+  startQuiz();
+}
+
+function showAllResults() {
+  const total = tourScores.filter(Boolean).reduce((a,b) => a + b.correct, 0);
+  const completed = tourScores.filter(Boolean).length;
+  const avg = Math.round((total / (completed * PER_TOUR)) * 100);
+
+  document.getElementById('rpct').textContent = avg + '%';
+  document.getElementById('rscr').textContent = total;
+  document.getElementById('rwrong').textContent = completed * PER_TOUR - total;
+  document.getElementById('rbal').textContent = avg + '/100';
+  document.getElementById('rgrade').textContent = '⬡ ЖАЛПЫ НӘТИЖЕ';
+  document.getElementById('rtitle').textContent = `${completed} тур аяқталды!`;
+  document.getElementById('rsub').textContent = `Орташа балл: ${avg}/100 — ${total} дұрыс жауаптан ${completed*PER_TOUR}`;
+
+  setTimeout(() => {
+    document.getElementById('rfill').style.strokeDashoffset = 440 - (avg/100)*440;
+  }, 200);
+
+  document.getElementById('btnNextTour').textContent = '↺ Қайта бастау';
+  document.getElementById('btnNextTour').onclick = fullRestart;
+  document.getElementById('btnAllTours').style.display = 'none';
+
+  if (avg >= 75) spawnConfetti(15);
+}
+
+function goHome() {
+  renderHomeDots();
+  showScreen('home');
+  document.getElementById('navPill').textContent = 'Саясаттану';
+}
+
+function fullRestart() {
+  curTour = 0;
+  buildTourPool();
+  renderHomeDots();
+  showScreen('home');
+  document.getElementById('navPill').textContent = 'Саясаттану';
+}
+
+// ══════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function spawnConfetti(n) {
+  const cols = ['#00d2ff','#7b5ea7','#00ffe7','#ff6ef7','#ffffff','#00e676'];
+  for (let i = 0; i < n; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-p';
+    el.style.cssText = `left:${Math.random()*100}vw;top:-20px;background:${cols[~~(Math.random()*cols.length)]};animation-delay:${Math.random()*.5}s;animation-duration:${1.6+Math.random()}s`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+}
+
+function createParticles() {
+  const c = document.getElementById('particles');
+  for (let i = 0; i < 16; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random()*100}vw;animation-duration:${9+Math.random()*12}s;animation-delay:${Math.random()*10}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px`;
+    if (Math.random()>.5) p.style.background='#7b5ea7';
+    c.appendChild(p);
+  }
+}
+
+// Init
+buildTourPool();
+renderHomeDots();
+createParticles();
+</script>
+</body>
+</html>
